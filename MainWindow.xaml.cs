@@ -68,6 +68,7 @@ namespace HTTPSMocker
                 return;
             }
             LogTextBox.Text += text + "\n";
+            LogTextBox.ScrollToEnd();
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Threading;
 using System.Net;
 using System.Windows;
 
@@ -25,7 +26,7 @@ namespace HTTPSMocker
 
             listener.Prefixes.Add("http://localhost:" + port + "/");
             listener.Prefixes.Add("http://127.0.0.1:" + port + "/");
-
+ 
             listener.Start();
 
             MainWindow.that.AddLog("Server is running");
@@ -34,17 +35,19 @@ namespace HTTPSMocker
 
                 try
                 {
-                    var context = listener.GetContext(); //Block until a connection comes in
-                    //MessageBox.Show("Connection came in!");
+                    var context = listener.GetContext(); 
                     MainWindow.that.AddLog("Connection came in!");
                     context.Response.StatusCode = 200;
                     context.Response.SendChunked = true;
-                    MainWindow.that.AddLog("HTTP METHOD: " + context.Request.HttpMethod.ToString());
-                    string requestData = GetHttpRequestData(context.Request);
+
+                    var request = context.Request;
+                    MainWindow.that.AddLog("HTTP METHOD: " + request.HttpMethod.ToString());
+                    string requestData = GetHttpRequestData(request);
                     MainWindow.that.AddLog("REQUEST DATA: " + requestData);
 
                     SendHttpResponse(context.Response);
                     MainWindow.that.AddLog("SENT THE RESPONSE: " + MainWindow.that.GetResponse());
+                    
                 }
                 catch (Exception e)
                 {
