@@ -1,0 +1,13 @@
+﻿<Window x:Class="HTTPSMocker.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="MainWindow" Height="350" Width="525">
+    <Grid>
+        <Button x:Name="StartServiceButton" Content="Start Service" HorizontalAlignment="Left" Height="25" Margin="227,30,0,0" VerticalAlignment="Top" Width="98" Click="StartServiceButton_Click"/>
+        <Button x:Name="StopServiceButton" Content="Stop Service" HorizontalAlignment="Left" Margin="349,33,0,0" VerticalAlignment="Top" Width="94" Click="StopServiceButton_Click"/>
+        <TextBox x:Name="PortTextBox" HorizontalAlignment="Left" Height="23" Margin="60,33,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="120"/>
+        <Label Content="Response Text:" HorizontalAlignment="Left" Margin="60,82,0,0" VerticalAlignment="Top"/>
+        <TextBox x:Name="ResponseTextBox" HorizontalAlignment="Left" Height="180" Margin="60,113,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="383" Grid.RowSpan="1000000" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" ScrollViewer.CanContentScroll="True" AcceptsReturn="True" IsReadOnlyCaretVisible="True"/>
+
+    </Grid>
+</Window>
