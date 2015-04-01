@@ -23,26 +23,61 @@ namespace HTTPSMocker
     {
         Thread oThread;
         HttpMockServer server;
+        static public MainWindow that;
         public MainWindow()
         {
             InitializeComponent();
+            MainWindow.that = this;
         }
 
         private void StartServiceButton_Click(object sender, RoutedEventArgs e)
         {
-            server = new HttpMockServer(PortTextBox.Text, ResponseTextBox.Text);
+            server = new HttpMockServer(PortTextBox.Text);
             oThread = new Thread(new ThreadStart(server.Start));
 
             oThread.Start();
+
+            StartServiceButton.IsEnabled = false;
+            StopServiceButton.IsEnabled = true;
         }
 
         private void StopServiceButton_Click(object sender, RoutedEventArgs e)
         {
             server.listener.Close();
             oThread.Abort();
+
+            StartServiceButton.IsEnabled = true;
+            StopServiceButton.IsEnabled = false;
         }
 
-  
+        public string GetResponse()
+        {
+            if (!Dispatcher.CheckAccess())
+            {
+                return Dispatcher.Invoke(() => GetResponse());
+                //return "";
+            }
+            return ResponseTextBox.Text;
+        }
+
+        public void AddLog(string text)
+        {
+            if (!Dispatcher.CheckAccess())
+            {
+                Dispatcher.Invoke(() => AddLog(text));
+                return;
+            }
+            LogTextBox.Text += text + "\n";
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (oThread.IsAlive)
+            {
+                server.listener.Close();
+                oThread.Abort();
+            }
+        }
 
 
     }
