@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Threading;
+using System.IO;
 
 namespace HTTPSMocker
 {
@@ -24,15 +25,35 @@ namespace HTTPSMocker
         Thread oThread;
         HttpMockServer server;
         static public MainWindow that;
+        List<string> prefixes;
         public MainWindow()
         {
             InitializeComponent();
             MainWindow.that = this;
+            Loaded += Window_Loaded;
+ 
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                string[] prefixFile = File.ReadAllLines("prefixes.txt");
+                prefixes = new List<string>(prefixFile);
+            }
+            catch (Exception)
+            {
+                AddLog("No prefix.txt found so adding localhost by default");
+                prefixes = new List<string>();
+                prefixes.Add("http://localhost"); 
+                prefixes.Add("http://127.0.0.1");  
+            }
+
         }
 
         private void StartServiceButton_Click(object sender, RoutedEventArgs e)
         {
-            server = new HttpMockServer(PortTextBox.Text);
+            server = new HttpMockServer(PortTextBox.Text, prefixes);
             oThread = new Thread(new ThreadStart(server.Start));
 
             oThread.Start();
@@ -73,10 +94,13 @@ namespace HTTPSMocker
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            if (oThread.IsAlive)
+            if (oThread != null)
             {
-                server.listener.Close();
-                oThread.Abort();
+                if (oThread.IsAlive)
+                {
+                    server.listener.Close();
+                    oThread.Abort();
+                }
             }
         }
 

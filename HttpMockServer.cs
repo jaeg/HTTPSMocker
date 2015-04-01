@@ -14,18 +14,25 @@ namespace HTTPSMocker
     {
         string port;
         public HttpListener listener = new HttpListener();
-        public HttpMockServer(string port)
+        public HttpMockServer(string port, List<string> prefixes)
         {
 
             this.port = port;
+
+            foreach (string prefix in prefixes)
+            {
+                string url = prefix + ":" + port + "/";
+                listener.Prefixes.Add(url);
+                MainWindow.that.AddLog("Added URL to listener: " + url);
+            }
         }
 
 
         public void Start()
         {
 
-            listener.Prefixes.Add("http://localhost:" + port + "/");
-            listener.Prefixes.Add("http://127.0.0.1:" + port + "/");
+            //listener.Prefixes.Add("http://localhost:" + port + "/");
+            //listener.Prefixes.Add("http://127.0.0.1:" + port + "/");
  
             listener.Start();
 
